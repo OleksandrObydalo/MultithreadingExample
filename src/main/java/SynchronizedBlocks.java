@@ -6,6 +6,9 @@ public class SynchronizedBlocks {
     private List<Integer> intList1 = new ArrayList<>();
     private List<Integer> intList2 = new ArrayList<>();
 
+    final Object  lock1 = new Object();
+    final Object  lock2 = new Object();
+
 
     public static void main(String[] args) {
         SynchronizedBlocks sb = new SynchronizedBlocks();
@@ -31,29 +34,27 @@ public class SynchronizedBlocks {
         System.out.println("List has taken " + (end-start) + " milliseconds");
     }
 
-    private synchronized void copyArrayA() {
-
-        for(int i = 0; i < a.length; i++){
-            intList1.add(a[i]);
-            System.out.println(intList1);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+    private void copyArrayToList(int[] array, List<Integer> list, Object lock){
+        synchronized (lock){
+            for (int element : array) {
+                list.add(element);
+                System.out.println(list);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
+    private void copyArrayA() {
+        copyArrayToList(a, intList1, lock1);
+
+    }
+
     private void copyArrayB() {
-        for(int i = 0; i < b.length; i++){
-            intList2.add(b[i]);
-            System.out.println(intList2);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        copyArrayToList(b, intList2, lock2);
     }
 
     private class RunnerA implements Runnable{
