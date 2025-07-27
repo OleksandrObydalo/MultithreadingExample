@@ -9,7 +9,7 @@ public class FibonacciConcurrent {
         th2.start();
     }
 
-    private static void calcNext(){
+    private static synchronized void calcNext(){
         System.out.println("Thread name: " + Thread.currentThread().getName());
         int next = previous + current;
         previous = current;
